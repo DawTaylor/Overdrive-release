@@ -172,6 +172,30 @@
     "charging_nearly_complete": "Sạc sắp hoàn tất",
     "battery_nearly_full": "Pin ở mức {0}% - sạc sắp hoàn tất"
   },
+  "parking": {
+    "notify": {
+      "started_title": "Đã đỗ xe",
+      "ended_title": "Đã quay lại xe",
+      "ended_body": "Vắng mặt {0} · {1} sự kiện · {2} xe đến hoặc rời đi",
+      "ended_body_short": "{0} xe đến hoặc rời đi",
+      "ended_body_unwatched": "Vắng mặt {0} · Giám sát chưa bật ({1})",
+      "ended_events": "{0} sự kiện",
+      "nothing_critical": "Không có gì nghiêm trọng",
+      "no_place": "Không có vị trí",
+      "gps_fresh": "GPS mới",
+      "gps_recent": "GPS gần đây",
+      "gps_stale": "GPS cũ — trong nhà để xe?",
+      "gps_unknown": "Không có tín hiệu GPS",
+      "sentry_off": "Giám sát chưa bật ({0})",
+      "sentry_safe_zone": "khu vực an toàn",
+      "sentry_schedule": "ngoài lịch hẹn",
+      "sentry_disabled": "giám sát đang tắt",
+      "sentry_vehicle_on_only": "chế độ chỉ khi xe bật",
+      "sentry_pipeline_down": "camera không chạy",
+      "sentry_unknown": "không rõ",
+      "btn_walk": "Dẫn đường về xe"
+    }
+  },
   "telegram": {
     "recording_caption": "📹 Bản ghi ({0}) - {1}s",
     "recording_caption_no_label": "📹 Bản ghi - {0}s",
@@ -255,7 +279,23 @@
       "error": "⚠️ Lỗi: {0}"
     },
     "help": {
-      "text": "📖 *Lệnh*\n_OverDrive {0}_\n\n*Giám sát*\n`/start` - Bật giám sát\n`/stop` - Tắt giám sát\n`/status` - Trạng thái hệ thống\n\n*Sự kiện*\n`/events [giờ] [trang]` - Liệt kê bản ghi\n`/download <tệp>` - Tải video xuống\n\n*Daemon*\n`/daemons` - Liệt kê mọi daemon\n`/daemon <tên> start|stop`\n\n*Hệ thống*\n`/url` - URL tunnel\n`/update` - Kiểm tra cập nhật ứng dụng\n`/backup` - Xuất bản sao lưu cài đặt\n`/backup trips` - Sao lưu kèm lịch sử hành trình\n`/help` - Tin nhắn này"
+      "text": "📖 *Lệnh*\n_OverDrive {0}_\n\n*Giám sát*\n`/start` - Bật giám sát\n`/stop` - Tắt giám sát\n`/status` - Trạng thái hệ thống\n\n*Sự kiện*\n`/events [giờ] [trang]` - Liệt kê bản ghi\n`/download <tệp>` - Tải video xuống\n\n*Daemon*\n`/daemons` - Liệt kê mọi daemon\n`/daemon <tên> start|stop`\n\n*Hệ thống*\n`/url` - URL tunnel\n`/update` - Kiểm tra cập nhật ứng dụng\n`/backup` - Xuất bản sao lưu cài đặt\n`/backup trips` - Sao lưu kèm lịch sử hành trình\n`/where` - Tôi đã đỗ xe ở đâu?\n`/help` - Tin nhắn này"
+    },
+    "parking": {
+      "where": {
+        "unavailable": "⚠️ Không thể kết nối tới daemon camera. Thử `/daemon camera start`.",
+        "disabled": "🅿️ Đỗ xe thông minh đang tắt. Bật trong Cài đặt giám sát → Đỗ xe.",
+        "none": "🅿️ Chưa ghi nhận lần đỗ xe nào.",
+        "title_open": "🅿️ *Xe của bạn đang đỗ*",
+        "title_last": "🅿️ *Lần đỗ xe gần nhất*",
+        "parked_for": "Đã đỗ {0}",
+        "was_away": "Bạn đã vắng mặt {0}",
+        "counts": "{0} sự kiện giám sát · {1} xe quanh bạn",
+        "gps_fresh": "Vị trí GPS mới",
+        "gps_recent": "Vị trí GPS từ vài phút trước",
+        "gps_stale": "Vị trí GPS đã cũ — có lẽ xe ở nhà để xe trong nhà; vị trí hiển thị là lối vào",
+        "gps_unknown": "Không có tín hiệu GPS"
+      }
     },
     "surveillance": {
       "started": "✅ Đã bật giám sát",
@@ -615,6 +655,8 @@
     "slw_description": "Trạng thái hiện tại của thiết lập Cảnh báo giới hạn tốc độ.",
     "seat_climate": "Sưởi/làm mát ghế",
     "seat_climate_description": "Trạng thái hiện tại của các thiết lập điều hòa ghế.",
+    "steering_heat": "Sưởi vô lăng",
+    "steering_heat_description": "Sưởi vô lăng đang bật hay tắt. Không khả dụng trên xe không báo trạng thái này.",
     "low": "Thấp",
     "high": "Cao",
     "type": "Loại",
@@ -762,6 +804,10 @@
     "open_app_description": "Khởi chạy một ứng dụng đã cài khi tự động hóa này kích hoạt.",
     "open_app_split": "Mở ứng dụng (Chia đôi màn hình)",
     "open_app_split_description": "Khởi chạy một ứng dụng đã cài, gắn vào một nửa màn hình (chia đôi màn hình) khi tự động hóa này kích hoạt.",
+    "open_apps_split": "Mở hai ứng dụng (Chia đôi màn hình)",
+    "open_apps_split_description": "Mở cùng lúc hai ứng dụng đã chọn ở chế độ chia đôi màn hình khi tự động hóa này kích hoạt.",
+    "primary_app": "Ứng dụng chính",
+    "secondary_app": "Ứng dụng phụ",
     "show_camera_view": "Hiện khung xem camera",
     "show_camera_view_description": "Hiển thị khung xem camera trên head unit hoặc cụm đồng hồ người lái tại vị trí đã chọn. Chọn một camera đơn, cả bốn, hoặc chế độ xem ghép sau + bên cho một trong hai bên. Các chế độ xem ghép tuân theo thiết lập Điểm mù của bạn về camera hiển thị, hiệu chỉnh mắt cá và độ xoay. Dùng chung màn hình điểm mù; điểm mù được ưu tiên khi đang hoạt động.",
     "hide_camera_view": "Ẩn khung xem camera",
@@ -1058,6 +1104,8 @@
     "nav_recents": "Ứng dụng gần đây",
     "screenshot": "Chụp màn hình",
     "screenshot_description": "Chụp ảnh màn hình đã chọn và lưu vào bộ nhớ.",
+    "ivi_reboot": "Khởi động lại IVI",
+    "ivi_reboot_description": "Khởi động lại head-unit Android. Chỉ chạy khi xe đang đỗ, và bị chặn trong năm phút đầu sau khi khởi động hoặc sau một yêu cầu khởi động lại khác, để tránh vòng lặp khởi động lại.",
     "display_head_unit": "Màn hình trung tâm",
     "move_app_display": "Chuyển ứng dụng sang màn hình",
     "move_app_display_description": "Chuyển một ứng dụng sang màn hình trung tâm hoặc màn hình sau vô lăng.",

@@ -24,6 +24,8 @@
     <string name="action_select_all_short">Tất cả</string>
     <string name="action_delete">Xoá</string>
     <string name="action_share">Chia sẻ</string>
+    <string name="action_create_evidence_pack">Tạo gói bằng chứng</string>
+    <string name="action_share_evidence_pack">Chia sẻ gói bằng chứng</string>
     <string name="action_done">XONG</string>
     <string name="action_remind_me_later">NHẮC TÔI SAU</string>
     <string name="action_retry">Thử lại</string>
@@ -79,6 +81,8 @@
     <string name="overlay_mode_continuous_cd">Ghi liên tục</string>
     <string name="overlay_mode_drive_cd">Ghi hình chế độ lái</string>
     <string name="overlay_mode_proximity_cd">Ghi hình bảo vệ khoảng cách</string>
+    <string name="overlay_recording_mode_failed">Không thể đổi chế độ ghi hình</string>
+    <string name="overlay_recording_mode_failed_fmt">Không thể đổi chế độ ghi hình: %1$s</string>
     <!-- item_log_entry placeholders (timestamp/tag/message are runtime, but these are
          placeholder/preview text used at design time and visible in some empty states) -->
     <string name="log_entry_default_timestamp">12:34:56</string>
@@ -103,16 +107,33 @@
     <string name="tailscale_qr_waiting">Đang chờ URL đăng nhập…</string>
     <string name="tailscale_enable_proxy">Bật Tailscale Proxy</string>
     <string name="tailscale_proxy_explainer">Định tuyến MQTT qua Tailscale để bạn có thể tiếp cận một broker riêng trên tailnet của bạn mà không cần chuyển tiếp cổng.</string>
+    <string name="tailscale_enable_https">Phục vụ giao diện web qua HTTPS</string>
+    <string name="tailscale_https_explainer">Chỉ công bố bảng điều khiển trong tailnet của bạn, tại một địa chỉ https://…ts.net đáng tin cậy. MagicDNS và chứng chỉ HTTPS phải được bật sẵn trong trang quản trị Tailscale.</string>
+    <string name="toast_tailscale_https_enabled">Đã bật HTTPS trong tailnet</string>
+    <string name="toast_tailscale_https_disabled">Đã tắt HTTPS trong tailnet</string>
+    <string name="toast_tailscale_https_save_failed">Không thể đổi HTTPS. Hãy khởi động và đăng nhập Tailscale, bật MagicDNS và chứng chỉ HTTPS, và đảm bảo cổng 443 không có quy tắc Serve nào khác.</string>
     <string name="tailscale_proxy_warning">Khi bật, MQTT đến các broker công cộng (HiveMQ, AWS IoT, v.v.) sẽ thất bại — Tailscale chỉ định tuyến đến tailnet của bạn. Lưu sẽ khởi động lại daemon.</string>
     <!-- Camera ingestion mode selector (Default vs DiLink 4) -->
     <string name="camera_mode_title">Chế độ tiếp nhận</string>
-    <string name="camera_mode_subtitle">Chọn chế độ phù hợp với màn hình xe của bạn. Mặc định phù hợp với camera toàn cảnh đời cũ; DiLink 4 dùng đầu ra SurfaceTexture gốc của AVM HAL.</string>
+    <string name="camera_mode_subtitle">Chọn chế độ phù hợp với màn hình xe của bạn. Mặc định phù hợp với camera toàn cảnh đời cũ; DiLink 4 dùng đường SurfaceTexture của AVM; DiLink 5 dùng cầu nối qcarcam_test của SA8155P.</string>
     <string name="camera_mode_option_default">Mặc định — hoạt động trên Seal, Atto, Dolphin (hầu hết xe)</string>
     <string name="camera_mode_option_dilink4">DiLink 4 — các phiên bản Han / Tang mới hơn</string>
+    <string name="camera_mode_option_dilink5">DiLink 5 — Sealion 7 / SA8155P</string>
     <string name="camera_mode_current_default">Hiện tại: mặc định</string>
     <string name="camera_mode_current_dilink4">Hiện tại: DiLink 4</string>
+    <string name="camera_mode_current_dilink5">Hiện tại: DiLink 5</string>
     <string name="camera_mode_save">Áp dụng &amp; khởi động lại</string>
     <string name="camera_mode_hint">Thay đổi chế độ sẽ khởi động lại daemon camera. Nếu video trông sai (bị bóp méo, thiếu góc phần tư, lớp phủ đỏ), hãy thử chế độ khác.</string>
+    <string name="camera_dilink5_mapping_title">Thứ tự camera DiLink 5</string>
+    <string name="camera_dilink5_mapping_subtitle">ID camera vật lý được liệt kê theo thứ tự trước, phải, sau, trái. Hãy giữ Tự động trừ khi ảnh xem trước gốc cho thấy xe này dùng thứ tự khác.</string>
+    <string name="camera_dilink5_mapping_current_auto">Hiện tại: Tự động / mặc định theo mẫu xe</string>
+    <string name="camera_dilink5_mapping_current_format">Hiện tại: %1$s</string>
+    <string name="camera_dilink5_mapping_auto">Tự động — mặc định theo mẫu xe</string>
+    <string name="camera_dilink5_mapping_standard">Tiêu chuẩn — 0,1,2,3</string>
+    <string name="camera_dilink5_mapping_opposite">Đảo trước/sau + trái/phải — 2,3,0,1</string>
+    <string name="camera_dilink5_mapping_shark">Shark / DMO — 8,9,5,4</string>
+    <string name="camera_dilink5_mapping_hint">Tùy chọn đảo cặp chỉ là phương án thử cho lỗi đã được báo cáo; hãy kiểm tra cả bốn ảnh xem trước trước khi áp dụng. Lưu sẽ khởi động lại daemon camera.</string>
+    <string name="camera_dilink5_mapping_unchanged">Thứ tự camera này đã được chọn.</string>
     <!-- DiLink 4 quadrant tweaks (only effective when cameraMode = DiLink 4) -->
     <string name="camera_dilink4_tweaks_title">Tinh chỉnh góc phần tư DiLink 4</string>
     <string name="camera_dilink4_tweaks_subtitle">Điều chỉnh theo từng xe cho đường DiLink 4. Chỉ có hiệu lực khi chọn chế độ DiLink 4 ở trên.</string>
@@ -140,6 +161,8 @@
     <string name="camera_oem_dashcam_save">Lưu</string>
     <string name="camera_concurrent_probe_label">Kiểm tra hỗ trợ hai camera khi khởi động lần sau</string>
     <string name="camera_concurrent_probe_subtitle">Kiểm tra một lần, mở cả hai camera cùng lúc để xác nhận xe này có thể chạy đồng thời pano + camera hành trình. Chạy một lần ở lần khởi động lại tiếp theo khi đang đỗ. Để TẮT trừ khi bản ghi trông không đúng — không bắt buộc và có thể làm gián đoạn ngắn một bản ghi nếu đang ghi khi nó chạy.</string>
+    <string name="camera_decoupled_lane_label">Luồng mã hóa tách rời (sửa lỗi camera lùi)</string>
+    <string name="camera_decoupled_lane_subtitle">Sao chép từng khung hình camera trước khi mã hóa, để việc ghi hình bị treo không bao giờ làm mất hình camera lùi của chính xe. Chỉ dùng cho chế độ camera đời cũ; tốn khoảng 60 MB bộ nhớ GPU và thêm một lượt xử lý GPU cho mỗi khung hình. Có hiệu lực từ lần khởi động lại camera tiếp theo (bật/tắt ACC hoặc khởi động lại daemon).</string>
     <!-- Dashcam-side camera labels — REVERSE of the pano labels above. The
          OEM dashcam id is the opposite of the pano id, so the helpful
          "this is what your trim should pick" hint flips between the two
@@ -258,6 +281,8 @@
     <string name="recording_lib_filter_sheet_title">Lọc bản ghi</string>
     <string name="recording_lib_filter_apply">Áp dụng</string>
     <string name="recording_lib_filter_reset">Đặt lại</string>
+    <string name="recording_lib_chip_parking_session">Lần đỗ này</string>
+    <string name="recording_lib_chip_parking_session_at">Lần đỗ %1$s</string>
     <string name="recording_lib_filter_section_what">Đối tượng</string>
     <string name="recording_lib_filter_section_severity">Độ nghiêm trọng</string>
     <string name="recording_lib_filter_section_type">Loại</string>
@@ -497,6 +522,23 @@
     <string name="daemon_name_zrok">Đường hầm Zrok</string>
     <string name="daemon_name_tailscale">Đường hầm Tailscale</string>
     <string name="daemon_name_telegram">Telegram Bot</string>
+    <string name="daemon_status_running">Đang chạy</string>
+    <string name="daemon_status_proxy_on">%1$s • Proxy: BẬT</string>
+    <string name="daemon_status_running_uptime">Đang chạy • Thời gian chạy: %1$s</string>
+    <string name="daemon_status_stopped">Đã dừng</string>
+    <string name="daemon_status_starting">Đang khởi động…</string>
+    <string name="daemon_status_stopping">Đang dừng…</string>
+    <string name="daemon_status_error">Lỗi</string>
+    <string name="daemon_status_needs_config">Cần cấu hình</string>
+    <string name="daemon_config_no_token">Chưa cấu hình token. Chạm để thiết lập.</string>
+    <string name="daemon_config_paid_token">Bản trả phí cần token. Chạm để thiết lập.</string>
+    <string name="daemon_config_not_logged_in">Chưa đăng nhập. Chạm để thiết lập.</string>
+    <string name="daemon_status_stop_failed">Dừng thất bại: %1$s</string>
+    <string name="daemon_uptime_fmt">Thời gian chạy: %1$s</string>
+    <string name="daemon_subprocess_pid">%1$s (PID: %2$d)</string>
+    <string name="toast_cloudflared_encrypt_failed">Không thể bảo mật token Cloudflared.</string>
+    <string name="toast_cloudflared_save_failed">Không thể lưu cài đặt Cloudflared. Kiểm tra xem Camera Daemon có đang chạy không.</string>
+    <string name="projection_temporarily_unavailable">Tạm thời không thể chiếu hình. Vui lòng mở lại ứng dụng.</string>
     <string name="clip_label_access_code">Mã truy cập</string>
     <string name="clip_label_url">URL</string>
     <!-- ABRP -->
@@ -564,6 +606,13 @@
     <string name="toast_cannot_play_video">Không thể phát video: %1$s</string>
     <string name="dialog_delete_recording_title">Xóa bản ghi</string>
     <string name="dialog_delete_recording_message">Xóa %1$s?\nĐiều này không thể hủy bỏ được.</string>
+    <string name="dialog_create_evidence_pack_title">Tạo gói bằng chứng?</string>
+    <string name="dialog_create_evidence_pack_message">OverDrive chỉ gửi siêu dữ liệu sự kiện đã được lọc tới nhà cung cấp AI bạn đã cấu hình. Video vẫn nằm trên máy và chỉ được thêm vào gói bằng chứng khi tải xuống.</string>
+    <string name="toast_evidence_pack_creating">Đang tạo gói bằng chứng…</string>
+    <string name="toast_evidence_pack_ready">Gói bằng chứng đã sẵn sàng</string>
+    <string name="toast_evidence_pack_unavailable">Bản ghi này chưa được lập chỉ mục</string>
+    <string name="toast_evidence_pack_failed">Không thể tạo gói bằng chứng: %1$s</string>
+    <string name="error_unknown">Lỗi không xác định</string>
     <string name="toast_recording_deleted">Đã xóa bản ghi</string>
     <string name="toast_recording_delete_failed">Không thể xóa bản ghi</string>
     <string name="toast_batch_delete_partial">%1$d bị xóa, %2$d thất bại</string>
@@ -777,7 +826,7 @@
     <string name="vehicle_dialog_title">Đặt dung lượng pin</string>
     <string name="vehicle_dialog_capacity_label">Dung lượng</string>
     <string name="vehicle_dialog_capacity_suffix">kWh</string>
-    <string name="vehicle_dialog_capacity_helper">5 đến 120 kWh. Để trống để dùng mặc định theo mẫu xe.</string>
+    <string name="vehicle_dialog_capacity_helper">5 đến 120 kWh. Giá trị dưới 15 chỉ dành cho xe PHEV.</string>
     <string name="vehicle_dialog_model_label">Mô hình</string>
     <string name="vehicle_dialog_save">Lưu</string>
     <string name="vehicle_dialog_reset">Đặt lại để tự phát hiện</string>
@@ -1305,6 +1354,7 @@
     <string name="projection_cast">Truyền lên bảng đồng hồ</string>
     <string name="projection_stop">Dừng</string>
     <string name="projection_cast_failed">Không thể truyền ứng dụng đó lên bảng đồng hồ.</string>
+    <string name="projection_dilink5_mode_required">Đặt Chế độ xe thành DiLink 5 trong Chẩn đoán, rồi khởi động lại dịch vụ camera.</string>
     <string name="projection_status_idle">Chưa chiếu hình.</string>
     <string name="projection_status_live">Phản chiếu trực tiếp — chạm và vuốt để điều khiển.</string>
     <string name="projection_status_preview">Chế độ xem trước (tốc độ khung hình giảm trên xe này).</string>
@@ -1545,12 +1595,37 @@
     <string name="recording_headline_dashcam">Bản ghi hành trình</string>
     <string name="recording_headline_forward_camera">Bản ghi camera trước</string>
     <string name="recording_headline_replay">Phát lại tức thì</string>
+    <plurals name="recording_headline_person">
+        <item quantity="other">Phát hiện %1$d người</item>
+    </plurals>
+    <plurals name="recording_headline_vehicle">
+        <item quantity="other">Phát hiện %1$d phương tiện</item>
+    </plurals>
+    <plurals name="recording_headline_bike">
+        <item quantity="other">Phát hiện %1$d xe đạp/xe máy</item>
+    </plurals>
+    <plurals name="recording_headline_animal">
+        <item quantity="other">Phát hiện %1$d động vật</item>
+    </plurals>
+    <plurals name="recording_actor_person">
+        <item quantity="other">%1$d người</item>
+    </plurals>
+    <plurals name="recording_actor_vehicle">
+        <item quantity="other">%1$d phương tiện</item>
+    </plurals>
+    <plurals name="recording_actor_bike">
+        <item quantity="other">%1$d xe đạp/xe máy</item>
+    </plurals>
+    <plurals name="recording_actor_animal">
+        <item quantity="other">%1$d động vật</item>
+    </plurals>
     <string name="recording_distance_very_close">Rất gần</string>
     <string name="recording_distance_close">Gần</string>
     <string name="recording_distance_mid">Tầm trung</string>
     <string name="recording_distance_far">Xa</string>
     <string name="cd_recording_more_actions">Thêm thao tác bản ghi</string>
     <string name="vehicle_dialog_value_pending">—</string>
+    <string name="roi_tap_to_add_points">Chạm để thêm điểm (%1$d-%2$d)</string>
     <string name="carnav_section_header">Gửi tới dẫn đường trên xe</string>
     <string name="carnav_navigate">Dẫn đường</string>
     <string name="carnav_menu_navigate_here">Dẫn đường đến đây (thay tuyến)</string>
