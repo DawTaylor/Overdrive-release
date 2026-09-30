@@ -10549,19 +10549,19 @@ public class BydDataCollector {
      */
     static int doorFeatureForArea(int area, boolean rightHandDrive) {
         switch (area) {
-            case 1:
+            case BodyworkConstants.AREA_FRONT_DRIVER:
                 return rightHandDrive
                         ? BydFeatureIds.BODYWORK_DOOR_RF
                         : BydFeatureIds.BODYWORK_DOOR_LF;
-            case 2:
+            case BodyworkConstants.AREA_FRONT_PASSENGER:
                 return rightHandDrive
                         ? BydFeatureIds.BODYWORK_DOOR_LF
                         : BydFeatureIds.BODYWORK_DOOR_RF;
-            case 3: return BydFeatureIds.BODYWORK_DOOR_LR;
-            case 4: return BydFeatureIds.BODYWORK_DOOR_RR;
-            case 5: return BydFeatureIds.BODYWORK_HOOD;
-            case 6: return BydFeatureIds.BODYWORK_TRUNK;
-            case 7: return BydFeatureIds.BODYWORK_FUEL_CAP;
+            case BodyworkConstants.AREA_REAR_LEFT: return BydFeatureIds.BODYWORK_DOOR_LR;
+            case BodyworkConstants.AREA_REAR_RIGHT: return BydFeatureIds.BODYWORK_DOOR_RR;
+            case BodyworkConstants.AREA_HOOD: return BydFeatureIds.BODYWORK_HOOD;
+            case BodyworkConstants.AREA_TRUNK: return BydFeatureIds.BODYWORK_TRUNK;
+            case BodyworkConstants.AREA_FUEL_CAP: return BydFeatureIds.BODYWORK_FUEL_CAP;
             default: return BydFeatureIds.UNRESOLVED_ID;
         }
     }
@@ -10613,6 +10613,35 @@ public class BydDataCollector {
         if (!(legacy instanceof Number)) return Integer.MIN_VALUE;
         int legacyState = ((Number) legacy).intValue();
         return isValidDoorOpenState(legacyState) ? legacyState : Integer.MIN_VALUE;
+    }
+
+    /**
+     * Live open/close state for every door and lid, mapped to physical positions. Reads via the
+     * manager channel (works parked, verified on Di 3.0) with the legacy {@code getDoorState}
+     * fallback — the same read the poll/notifier use, so it stays consistent with door events.
+     *
+     * @return {@code [lf, rf, lr, rr, hood, trunk, fuelCap]}; each 1=open, 0=closed, -1=unknown.
+     */
+    public int[] readAllDoorOpenStates() {
+        boolean rhd = isRightHandDriveForDoorMapping();
+        // The front axis is by seat; doorFeatureForArea maps driver/passenger to the physical
+        // L/R feature by drive side, so pick the seat-area that yields each physical door.
+        int lf = normalizeDoorOpen(readDoorOpenState(
+                rhd ? BodyworkConstants.AREA_FRONT_PASSENGER : BodyworkConstants.AREA_FRONT_DRIVER, rhd));
+        int rf = normalizeDoorOpen(readDoorOpenState(
+                rhd ? BodyworkConstants.AREA_FRONT_DRIVER : BodyworkConstants.AREA_FRONT_PASSENGER, rhd));
+        int lr = normalizeDoorOpen(readDoorOpenState(BodyworkConstants.AREA_REAR_LEFT, rhd));
+        int rr = normalizeDoorOpen(readDoorOpenState(BodyworkConstants.AREA_REAR_RIGHT, rhd));
+        int hood = normalizeDoorOpen(readDoorOpenState(BodyworkConstants.AREA_HOOD, rhd));
+        int trunk = normalizeDoorOpen(readDoorOpenState(BodyworkConstants.AREA_TRUNK, rhd));
+        int fuelCap = normalizeDoorOpen(readDoorOpenState(BodyworkConstants.AREA_FUEL_CAP, rhd));
+        return new int[] { lf, rf, lr, rr, hood, trunk, fuelCap };
+    }
+
+    /** Map the raw door read (which uses MIN_VALUE for unavailable) to the API's 1/0/-1. */
+    private static int normalizeDoorOpen(int raw) {
+        return (raw == BodyworkConstants.STATE_OPEN || raw == BodyworkConstants.STATE_CLOSED)
+                ? raw : -1;
     }
 
     private void collectDoorLock(BydVehicleData.Builder b) {
