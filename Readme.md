@@ -96,6 +96,15 @@ Access at `http://<car-ip>:8080` when on the same WiFi. Zero setup, fastest stre
 ### Cloudflare Tunnel
 Access from anywhere via `https://<random>.trycloudflare.com`. No port forwarding, HTTPS by default. Video streaming can be slow due to Cloudflare limitations.
 
+**Paid version (named tunnel on your own domain):**
+Instead of a random `trycloudflare.com` URL, you can run a named tunnel on a domain managed in your Cloudflare account, e.g. `https://car.example.com`.
+
+1. In the [Cloudflare Zero Trust dashboard](https://one.dash.cloudflare.com/), go to **Networks → Tunnels & Mesh → Create a tunnel** and choose **Cloudflared**
+2. Copy the tunnel token.
+3. Under **Public Hostname**, add your hostname (e.g. `car.example.com`) with service `http://127.0.0.1:8080`
+4. In OverDrive: Daemons → Cloudflared settings → enable **Cloudflare Paid Version** → paste the token → save
+5. Start the Cloudflared daemon. The URL shown is your configured hostname
+
 ### Zrok Tunnel (Recommended)
 Free, open-source tunneling with no bandwidth limits at `https://<your-share>.share.zrok.io`. Best for video streaming.
 
