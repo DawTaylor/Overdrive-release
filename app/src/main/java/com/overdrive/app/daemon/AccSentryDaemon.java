@@ -61,9 +61,9 @@ public class AccSentryDaemon {
     /** settings get global mobile_data */
     private static String CMD_DATA_GET() { return Safe.s("4/qqmGNE2vhiGGggG70n0sRfHtz6gZempQZl+6FiiZk="); }
     /** /data/local/tmp */
-    private static String PATH_DATA_LOCAL_TMP() { return Safe.s("vuaMjrmBGBFh07qqnUuL8w=="); }
+    private static String PATH_DATA_LOCAL_TMP() { return com.overdrive.app.util.DaemonStorage.rebase(Safe.s("vuaMjrmBGBFh07qqnUuL8w==")); }
     /** /data/local/tmp/telegram_config.properties */
-    private static String PATH_TELEGRAM_CONFIG() { return Safe.s("ZHx6IP38aGV/Q7iMCCcxzwQSn0P1N0jxHygc8N+4Ft+9mlR8XQ+WvEw0ktanrtNx"); }
+    private static String PATH_TELEGRAM_CONFIG() { return com.overdrive.app.util.DaemonStorage.rebase(Safe.s("ZHx6IP38aGV/Q7iMCCcxzwQSn0P1N0jxHygc8N+4Ft+9mlR8XQ+WvEw0ktanrtNx")); }
 
     // Power levels from BYDAutoBodyworkDevice
     private static final int POWER_LEVEL_OFF = 0;
@@ -204,23 +204,23 @@ public class AccSentryDaemon {
     private static final String PROCESS_INSTANCE_NONCE =
             createProcessInstanceNonce();
     private static final String PARK_REAPER_PATH =
-            "/data/local/tmp/overdrive_park_reaper.sh";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.sh");
     private static final String PARK_REAPER_CONTROL_PATH =
-            "/data/local/tmp/overdrive_park_reaper.control";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.control");
     private static final String PARK_REAPER_STATE_PATH =
-            "/data/local/tmp/overdrive_park_reaper.state";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.state");
     private static final String PARK_REAPER_LEASE_PATH =
-            "/data/local/tmp/overdrive_park_reaper.lease";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.lease");
     private static final String PARK_REAPER_LEASE_OWNER_PATH =
             PARK_REAPER_LEASE_PATH + "/owner";
     private static final String PARK_REAPER_RUN_PATH =
-            "/data/local/tmp/overdrive_park_reaper.running";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.running");
     private static final String PARK_REAPER_RUN_OWNER_PATH =
             PARK_REAPER_RUN_PATH + "/owner";
     private static final String PARK_REAPER_ACK_PREFIX =
-            "/data/local/tmp/overdrive_park_reaper.ack.";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.ack.");
     private static final String PARK_REAPER_DONE_PREFIX =
-            "/data/local/tmp/overdrive_park_reaper.done.";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_park_reaper.done.");
 
     /** Process-local app context. Returns null before main() initialises it. */
     public static Context getAppContext() { return appContext; }
@@ -1424,7 +1424,7 @@ public class AccSentryDaemon {
     }
     
     // Lock file for singleton enforcement
-    private static final String LOCK_FILE = "/data/local/tmp/acc_sentry_daemon.lock";
+    private static final String LOCK_FILE = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/acc_sentry_daemon.lock");
     private static java.io.RandomAccessFile lockFileHandle;
     private static java.nio.channels.FileLock fileLock;
 
@@ -6534,7 +6534,7 @@ public class AccSentryDaemon {
     }
 
     private static final String SD_MOUNTED_LEASE_PATH =
-            "/data/local/tmp/overdrive_sd_mounted_lease";
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/overdrive_sd_mounted_lease");
     private static final long SD_MOUNTED_LEASE_MAX_HORIZON_MS =
             5 * 60_000L;
 
@@ -6630,7 +6630,7 @@ public class AccSentryDaemon {
      * keep the existing power-save behaviour bit-exact.
      */
     private static final String CAMERA_ACTIVE_LEASE_PATH =
-        "/data/local/tmp/camera_active_lease";
+        com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/camera_active_lease");
 
     // Upper bound on how far ahead of "now" a lease deadline may legitimately be.
     // CameraDaemon only ever writes now + 8s, so any live lease is <=8s out; we
@@ -8435,7 +8435,7 @@ public class AccSentryDaemon {
         //
         // A missing file falls through to auto-start; an unreadable one retries.
         java.io.File telegramSentinel =
-            new java.io.File("/data/local/tmp/telegram_bot_daemon.disabled");
+            new java.io.File(com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/telegram_bot_daemon.disabled"));
         if (telegramSentinel.exists()) {
             String reason = readSentinelReason(telegramSentinel);
             if (reason == null) {
@@ -8688,7 +8688,7 @@ public class AccSentryDaemon {
         // next ACC cycle or the next 30s in-process health-check tick
         // (only fires when MainActivity is alive). The watchdog respawns
         // on any non-zero exit, sentinel-gated for legitimate stops.
-        String scriptPath = "/data/local/tmp/start_telegram.sh";
+        String scriptPath = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/start_telegram.sh");
         try {
             // proxyArgs="" because AccSentry-launched daemon doesn't have
             // visibility into Android global HTTP proxy from this context.
@@ -10065,7 +10065,7 @@ public class AccSentryDaemon {
         // Also drop the previous park-END breadcrumb: a new park has begun, and the
         // app must not mistake the old stamp for this park's end.
         sb.append("run_bounded 20 rm -f /data/local/tmp/camera_daemon.lock ")
-          .append("/data/local/tmp/telegram_bot_daemon.lock ")
+          .append(com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/telegram_bot_daemon.lock "))
           .append(com.overdrive.app.ui.model.ParkedShutdown.ENDED_PATH)
           .append(" || true\n");
         sb.append("owns_state || { release_lease; stale_exit; }\n");

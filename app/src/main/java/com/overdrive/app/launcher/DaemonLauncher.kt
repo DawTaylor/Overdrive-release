@@ -21,15 +21,15 @@ class DaemonLauncher(
     private val logManager: LogManager
 ) {
     companion object {
-        private const val TAG = "DaemonLauncher"
+        private val TAG = "DaemonLauncher"
         
         // Log file paths for daemons
-        private const val CAMERA_DAEMON_LOG = "/data/local/tmp/cam_daemon.log"
-        private const val SENTRY_DAEMON_LOG = "/data/local/tmp/sentry_daemon.log"
-        private const val SENTRY_DAEMON_LOG_SYSTEM = "/data/data/com.android.providers.settings/sentry_daemon.log"
-        private const val ACC_SENTRY_DAEMON_LOG = "/data/local/tmp/acc_sentry_daemon.log"
-        private const val PROXY_DAEMON_LOG = "/data/local/tmp/proxy_daemon.log"
-        private const val TELEGRAM_DAEMON_LOG = "/data/local/tmp/telegrambotdaemon.log"
+        private val CAMERA_DAEMON_LOG = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/cam_daemon.log")
+        private val SENTRY_DAEMON_LOG = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/sentry_daemon.log")
+        private val SENTRY_DAEMON_LOG_SYSTEM = "/data/data/com.android.providers.settings/sentry_daemon.log"
+        private val ACC_SENTRY_DAEMON_LOG = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/acc_sentry_daemon.log")
+        private val PROXY_DAEMON_LOG = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/proxy_daemon.log")
+        private val TELEGRAM_DAEMON_LOG = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/telegrambotdaemon.log")
 
         // ==================== LOG ROTATION ====================
         // Hard ceiling for a daemon's stdout-redirect log (the files the UI
@@ -51,20 +51,20 @@ class DaemonLauncher(
         private const val SENTRY_DAEMON_PROCESS = "sentry_daemon"
         private const val ACC_SENTRY_DAEMON_PROCESS = "acc_sentry_daemon"
         private const val PROXY_DAEMON_PROCESS = "sentry_proxy"
-        private const val TELEGRAM_DAEMON_PROCESS = "telegram_bot_daemon"
-        private const val ZROK_PROCESS = "zrok"
-        private const val CAMERA_WATCHDOG_SCRIPT =
-            "/data/local/tmp/start_cam_daemon.sh"
-        private const val CAMERA_WATCHDOG_PID_FILE =
-            "/data/local/tmp/cam_watchdog.pid"
-        private const val CAMERA_WATCHDOG_LOCK_PATH =
-            "/data/local/tmp/cam_watchdog.lock"
-        private const val ACC_SENTRY_WATCHDOG_SCRIPT =
-            "/data/local/tmp/start_acc_sentry.sh"
-        private const val ACC_SENTRY_WATCHDOG_PID_FILE =
-            "/data/local/tmp/acc_sentry_watchdog.pid"
-        private const val ACC_SENTRY_WATCHDOG_LOCK_PATH =
-            "/data/local/tmp/acc_sentry_watchdog.lock"
+        private val TELEGRAM_DAEMON_PROCESS = "telegram_bot_daemon"
+        private val ZROK_PROCESS = "zrok"
+        private val CAMERA_WATCHDOG_SCRIPT =
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/start_cam_daemon.sh")
+        private val CAMERA_WATCHDOG_PID_FILE =
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/cam_watchdog.pid")
+        private val CAMERA_WATCHDOG_LOCK_PATH =
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/cam_watchdog.lock")
+        private val ACC_SENTRY_WATCHDOG_SCRIPT =
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/start_acc_sentry.sh")
+        private val ACC_SENTRY_WATCHDOG_PID_FILE =
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/acc_sentry_watchdog.pid")
+        private val ACC_SENTRY_WATCHDOG_LOCK_PATH =
+            com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/acc_sentry_watchdog.lock")
 
         /**
          * Test one `ps -A -o S,ARGS` snapshot for a live daemon process.
@@ -353,7 +353,7 @@ class DaemonLauncher(
          * backoff) — see [[feedback_acc_sentry_uncapped_immortal]].
          */
         fun buildAccSentryWatchdogScript(apkPath: String, proxyArgs: String): List<String> {
-            val lockFile = "/data/local/tmp/acc_sentry_daemon.lock"
+            val lockFile = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/acc_sentry_daemon.lock")
             return listOf(
                 "#!/system/bin/sh",
                 "# AccSentryDaemon Watchdog Script",
@@ -732,7 +732,7 @@ class DaemonLauncher(
     private fun launchCameraDaemonInternal(outputDir: String, nativeLibDir: String, callback: LaunchCallback) {
         val apkPath = context.applicationInfo.sourceDir
         val proxyArgs = getProxyArgs()
-        val scriptPath = "/data/local/tmp/start_cam_daemon.sh"
+        val scriptPath = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/start_cam_daemon.sh")
         
         logManager.debug(TAG, "Deploying CameraDaemon watchdog script...")
         callback.onLog("Deploying watchdog script...")
@@ -1162,8 +1162,8 @@ class DaemonLauncher(
     private fun launchAccSentryDaemonInternal(callback: LaunchCallback) {
         val apkPath = context.applicationInfo.sourceDir
         val proxyArgs = getProxyArgs()
-        val watchdogScriptPath = "/data/local/tmp/start_acc_sentry.sh"
-        val lockFilePath = "/data/local/tmp/acc_sentry_daemon.lock"
+        val watchdogScriptPath = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/start_acc_sentry.sh")
+        val lockFilePath = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/acc_sentry_daemon.lock")
         
         logManager.debug(TAG, "Deploying Immortal Watchdog Script for AccSentryDaemon...")
         callback.onLog("Deploying watchdog script via ADB (UID 2000)...")
@@ -1471,7 +1471,7 @@ class DaemonLauncher(
     private fun launchTelegramDaemonInternal(callback: LaunchCallback) {
         val apkPath = context.applicationInfo.sourceDir
         val proxyArgs = getProxyArgs()
-        val watchdogScriptPath = "/data/local/tmp/start_telegram.sh"
+        val watchdogScriptPath = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/start_telegram.sh")
 
         // Write output_dir to telegram config so daemon knows where events are stored
         writeOutputDirToTelegramConfig()
@@ -1731,7 +1731,7 @@ class DaemonLauncher(
     private fun copySingboxViaPrivilegedShell(callback: LaunchCallback, onComplete: () -> Unit) {
         val nativeLibDir = context.applicationInfo.nativeLibraryDir
         val srcPath = "$nativeLibDir/libsingbox.so"
-        val destPath = "/data/local/tmp/sing-box"
+        val destPath = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/sing-box")
         
         logManager.info(TAG, "Installing sing-box from $srcPath to $destPath")
         callback.onLog("Installing sing-box binary...")

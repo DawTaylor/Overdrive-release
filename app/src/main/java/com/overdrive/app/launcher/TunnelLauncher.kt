@@ -16,11 +16,11 @@ class TunnelLauncher(
 ) {
     companion object {
         private const val TAG = "TunnelLauncher"
-        private const val LAUNCH_GUARD_TIMEOUT_SECONDS = 90L
+        private val LAUNCH_GUARD_TIMEOUT_SECONDS = 90L
         
         // Cloudflared paths
-        private const val CLOUDFLARED_TMP_PATH = "/data/local/tmp/cloudflared"
-        private const val CLOUDFLARED_LOG = "/data/local/tmp/cloudflared.log"
+        private val CLOUDFLARED_TMP_PATH = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/cloudflared")
+        private val CLOUDFLARED_LOG = com.overdrive.app.util.DaemonStorage.rebase("/data/local/tmp/cloudflared.log")
         
         // Process name for identification
         private const val CLOUDFLARED_PROCESS = "cloudflared"
