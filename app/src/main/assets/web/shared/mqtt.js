@@ -131,7 +131,7 @@ const MQTT = {
                 <span class="conn-dot ${dotClass}"></span>
                 <div class="conn-info">
                     <div class="conn-name">${this.esc(conn.name || BYD.i18n.t('mqtt.unnamed'))}</div>
-                    <div class="conn-broker">${this.esc(conn.brokerUrl || '')}:${conn.port} → ${this.esc(conn.topic || '')}</div>
+                    <div class="conn-broker">${this.esc(conn.brokerUrl || '')}:${conn.port}${this.esc(conn.path || '')} → ${this.esc(conn.topic || '')}</div>
                 </div>
                 <div class="conn-actions" onclick="event.stopPropagation()">
                     <button class="icon-btn" onclick="MQTT.editConnection('${conn.id}')" title="${BYD.i18n.t('common.edit')}" aria-label="${BYD.i18n.t('common.edit')}">${editIcon}</button>
@@ -190,6 +190,7 @@ const MQTT = {
         document.getElementById('formName').value = '';
         document.getElementById('formBrokerUrl').value = '';
         document.getElementById('formPort').value = '1883';
+        document.getElementById('formPath').value = '';
         document.getElementById('formTopic').value = 'overdrive/vehicle/telemetry';
         document.getElementById('formUsername').value = '';
         document.getElementById('formPassword').value = '';
@@ -225,6 +226,7 @@ const MQTT = {
         document.getElementById('formName').value = conn.name || '';
         document.getElementById('formBrokerUrl').value = conn.brokerUrl || '';
         document.getElementById('formPort').value = conn.port || 1883;
+        document.getElementById('formPath').value = conn.path || '';
         document.getElementById('formTopic').value = conn.topic || '';
         document.getElementById('formUsername').value = conn.username || '';
         document.getElementById('formPassword').value = '';  // Don't prefill password
@@ -301,6 +303,7 @@ const MQTT = {
             name: document.getElementById('formName').value.trim(),
             brokerUrl: document.getElementById('formBrokerUrl').value.trim(),
             port: parseInt(document.getElementById('formPort').value) || 1883,
+            path: document.getElementById('formPath').value.trim(),
             topic: document.getElementById('formTopic').value.trim(),
             username: document.getElementById('formUsername').value.trim(),
             password: document.getElementById('formPassword').value,
