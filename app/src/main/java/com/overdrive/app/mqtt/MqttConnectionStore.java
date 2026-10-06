@@ -167,6 +167,9 @@ public class MqttConnectionStore {
             if (updates.has("name")) existing.name = updates.optString("name");
             if (updates.has("brokerUrl")) existing.brokerUrl = updates.optString("brokerUrl");
             if (updates.has("port")) existing.port = updates.optInt("port");
+            if (updates.has("path")) existing.path = updates.optString("path");
+            // A port/path typed into the broker URL wins over the fields (applied after all three).
+            existing.normalizeBrokerUrl();
             if (updates.has("topic")) existing.topic = updates.optString("topic");
             if (updates.has("clientId")) existing.clientId = updates.optString("clientId");
             if (updates.has("username")) existing.username = updates.optString("username");

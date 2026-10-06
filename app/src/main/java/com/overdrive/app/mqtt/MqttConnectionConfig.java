@@ -5,6 +5,8 @@ import com.overdrive.app.byd.cloud.crypto.CredentialCipher;
 import org.json.JSONObject;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Configuration for a single MQTT broker connection.
@@ -21,6 +23,7 @@ public class MqttConnectionConfig {
     public String name;                  // User-friendly label ("Home Assistant", "Fleet Server")
     public String brokerUrl;             // tcp://broker.hivemq.com or ssl://your-broker.com
     public int port;                     // 1883 (tcp) or 8883 (ssl)
+    public String path;                  // Optional WebSocket path, e.g. /mqtt (ws/wss only)
     public String topic;                 // e.g. overdrive/vehicle/telemetry
     public String clientId;              // Auto-generated from deviceId + connectionId
     public String username;              // Optional MQTT auth
@@ -93,6 +96,7 @@ public class MqttConnectionConfig {
         this.name = "";
         this.brokerUrl = "";
         this.port = DEFAULT_PORT;
+        this.path = "";
         this.topic = "overdrive/vehicle/telemetry";
         this.clientId = "";
         this.username = "";
@@ -150,30 +154,98 @@ public class MqttConnectionConfig {
      *   ws://host:port/path      — MQTT over WebSocket
      *   wss://host:port/path     — MQTT over secure WebSocket (the ISP firewall bypass)
      *
-     * The regex must allow an optional path after the port (e.g. /mqtt) so that
-     * wss://mqtt.eclipseprojects.io:443/mqtt is passed through as-is instead of
-     * getting a second port appended.
+     * The URI is assembled from its parts — protocol, host, {@link #port}, {@link #path} — so
+     * the port always lands before the path (wss://host:8884/mqtt, never wss://host/mqtt:8884).
+     * A port or path still embedded in {@link #brokerUrl} wins over the fields; normally
+     * {@link #normalizeBrokerUrl()} has already moved them into the fields.
+     *
+     * A bare hostname (no protocol) gets its protocol inferred from the port, because
+     * TLS-only brokers such as HiveMQ Cloud drop plain MQTT sent to their TLS port
+     * (Paho reason 32109 / EOFException):
+     *   8883 → ssl://host:8883
+     *   8884 → wss://host:8884/mqtt (the path defaults to /mqtt when none is set)
+     *   other → tcp://host:port
+     *
+     * The path only applies to ws:// and wss://; tcp:// and ssl:// have no path.
      */
     public String getBrokerUri() {
-        String url = brokerUrl;
-        if (url == null || url.isEmpty()) return "";
+        String url = brokerUrl == null ? "" : brokerUrl.trim();
+        if (url.isEmpty()) return "";
 
-        // Strip trailing slash (but not path components like /mqtt)
-        if (url.endsWith("/")) url = url.substring(0, url.length() - 1);
+        Matcher m = BROKER_URL.matcher(url);
+        // Unrecognised shape (e.g. an unbracketed IPv6 literal) — pass through and let Paho
+        // report it rather than guessing.
+        if (!m.matches()) return url;
 
-        // If the URL already contains a port (with or without a trailing path), use as-is.
-        // Matches: wss://broker:443  |  wss://broker:443/mqtt  |  ssl://broker:8883
-        if (url.matches("^(tcp|ssl|ws|wss)://.*:\\d+(/.*)?$")) {
-            return url;
+        String scheme = m.group(1);
+        String host = m.group(2);
+        int effectivePort = port;
+        if (m.group(3) != null) {
+            try {
+                effectivePort = Integer.parseInt(m.group(3));
+            } catch (NumberFormatException e) {
+                return url;
+            }
         }
+        String effectivePath = normalizePath(m.group(4) != null ? m.group(4) : path);
 
-        // Protocol present but no port — append the configured port
-        if (url.matches("^(tcp|ssl|ws|wss)://.*")) {
-            return url + ":" + port;
+        if (scheme == null) {
+            scheme = inferScheme(effectivePort);
+            if (scheme.equals("wss") && effectivePath.isEmpty()) effectivePath = "/mqtt";
         }
+        boolean isWebSocket = scheme.equals("ws") || scheme.equals("wss");
+        return scheme + "://" + host + ":" + effectivePort + (isWebSocket ? effectivePath : "");
+    }
 
-        // Bare hostname — prepend tcp:// and append port
-        return "tcp://" + url + ":" + port;
+    /**
+     * Move a port or path embedded in {@link #brokerUrl} ("host:8883",
+     * "wss://host:443/mqtt") into {@link #port} and {@link #path}, leaving just
+     * [protocol://]host in the URL, so the form shows what will actually be used. Values in
+     * the URL win over the fields. A URL with an invalid port (0, above 65535) or an
+     * unrecognised shape is left untouched. Called wherever a config enters the system
+     * (fromJson, store updates).
+     */
+    public void normalizeBrokerUrl() {
+        if (brokerUrl == null) return;
+        Matcher m = BROKER_URL.matcher(brokerUrl.trim());
+        if (!m.matches()) return;
+        if (m.group(3) != null) {
+            int parsed;
+            try {
+                parsed = Integer.parseInt(m.group(3));
+            } catch (NumberFormatException e) {
+                return;
+            }
+            if (parsed < 1 || parsed > 65535) return;
+            port = parsed;
+        }
+        if (m.group(4) != null && !normalizePath(m.group(4)).isEmpty()) {
+            path = normalizePath(m.group(4));
+        }
+        brokerUrl = (m.group(1) != null ? m.group(1) + "://" : "") + m.group(2);
+        path = normalizePath(path);
+    }
+
+    /** "" for blank; otherwise a single leading "/" and no trailing "/". */
+    private static String normalizePath(String p) {
+        if (p == null) return "";
+        p = p.trim();
+        while (p.endsWith("/")) p = p.substring(0, p.length() - 1);
+        if (p.isEmpty()) return "";
+        return p.startsWith("/") ? p : "/" + p;
+    }
+
+    private static final int TLS_PORT = 8883;
+    private static final int WSS_PORT = 8884;
+    // [protocol://]host[:port][/path]. The host is a name/IPv4 or a bracketed IPv6 literal; an
+    // unbracketed IPv6 literal must not match, or "::1" would be split into host ":" and port 1.
+    private static final Pattern BROKER_URL = Pattern.compile(
+            "^(?:(tcp|ssl|ws|wss)://)?([^:/\\[\\]]+|\\[[^\\]]+\\])(?::(\\d+))?(/.*)?$");
+
+    private static String inferScheme(int port) {
+        if (port == TLS_PORT) return "ssl";
+        if (port == WSS_PORT) return "wss";
+        return "tcp";
     }
 
     /**
@@ -232,6 +304,7 @@ public class MqttConnectionConfig {
             json.put("name", name);
             json.put("brokerUrl", brokerUrl);
             json.put("port", port);
+            json.put("path", path);
             json.put("topic", topic);
             json.put("clientId", clientId);
             json.put("username", CredentialCipher.encrypt(username));
@@ -283,6 +356,8 @@ public class MqttConnectionConfig {
         config.name = json.optString("name", "");
         config.brokerUrl = json.optString("brokerUrl", "");
         config.port = json.optInt("port", DEFAULT_PORT);
+        config.path = json.optString("path", "");
+        config.normalizeBrokerUrl();
         config.topic = json.optString("topic", "overdrive/vehicle/telemetry");
         config.clientId = json.optString("clientId", "");
         // decrypt() passes plaintext through unchanged (isEncrypted() check),
