@@ -2330,6 +2330,7 @@
     "name_placeholder": "e.g. Home Assistant, Fleet Server",
     "field_broker": "Broker URL",
     "field_port": "Port",
+    "field_path": "Path (optional, WebSocket only)",
     "field_topic": "Topic",
     "field_user": "Username (optional)",
     "field_pass": "Password (optional)",

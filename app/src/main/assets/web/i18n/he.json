@@ -2325,6 +2325,7 @@
     "name_placeholder": "לדוגמה: Home Assistant, Fleet Server",
     "field_broker": "כתובת ה-Broker",
     "field_port": "פורט",
+    "field_path": "נתיב (אופציונלי, WebSocket בלבד)",
     "field_topic": "נושא (Topic)",
     "field_user": "שם משתמש (אופציונלי)",
     "field_pass": "סיסמה (אופציונלי)",
